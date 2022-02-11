@@ -1,6 +1,6 @@
 html,
 body {
-  background-image: url("russia.jpg");
+  background-image: url("/Images/russia.jpg");
   background-position: top top;
   background-size: cover cover;
   background-repeat: no-repeat;
