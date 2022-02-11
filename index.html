@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <script src="app.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="style.css"></link>
+    <title>Basic Tetris</title>
+  </head>
+  <body>
+    <div class="container">
+        <div class="uper-grid">
+            <div class="grid"></div>
+        </div>
+        <div class="sub-container">
+            <div class="mini-grid"></div>
+            <h3 class="data" id="level-text">Level : <span id="level">0</span></h3>
+            <h3 class="data" id="row-text">Row : <span id="row">0</span></h3>
+            <h3 class="data" id="score-text">Score : <span id="score">0</span></h3>
+            <button class="button-19" role="button" id="start-button">▶ / II</button>
+            <button class="button-19" role="button" id="restart-button">↺</button>
+        </div>
+        <div class="directional-buttons">
+            <button class="direction-button up" role="button" id="up-button">
+                <span class="visually-hidden">up</span>
+            </button>
+            <button class="direction-button left" role="button" id="left-button">
+                <span class="visually-hidden">left</span>
+            </button>
+            <button class="direction-button right" role="button" id="right-button">
+                <span class="visually-hidden">right</span>
+            </button>
+            <button class="direction-button down" role="button" id="down-button">
+                <span class="visually-hidden">down</span>
+            </button>
+        </div>
+    </div>
+  </body>
+</html>
