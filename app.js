@@ -57,6 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const bonusTable = [0, 100, 400, 900, 2500]
     const levelTable = [10, 60, 90, 120, 150, 200, 250, 300, 350]
 
+    let timerToutch
+    const timeToogle = 600
+    const timeReInput = 200
+
 
     //Tetrominoes
 
@@ -182,6 +186,32 @@ document.addEventListener('DOMContentLoaded', () => {
     upBtn.addEventListener('mousedown', () => {rotate()})
     rightBtn.addEventListener('mousedown', () => {moveRight()})
     downBtn.addEventListener('mousedown', () => {droping()})
+
+    leftBtn.addEventListener('touchstart', () => {touch(moveLeft)})
+    upBtn.addEventListener('touchstart', () => {touch(rotate)})
+    rightBtn.addEventListener('touchstart', () => {touch(moveRight)})
+    downBtn.addEventListener('touchstart', () => {touch(droping)})
+
+    leftBtn.addEventListener('touchend', () => {clearInterval(timerToutch)})
+    upBtn.addEventListener('touchend', () => {clearInterval(timerToutch)})
+    rightBtn.addEventListener('touchend', () => {clearInterval(timerToutch)})
+    downBtn.addEventListener('touchend', () => {clearInterval(timerToutch)})
+
+    function touch(inputFunction) {
+        inputFunction()
+        clearInterval(timerToutch)
+        timerToutch = setInterval(reTouch(inputFunction), timeToogle)
+    }
+
+    function reTouch(inputFunction) {
+        return function () {
+            inputFunction()
+            clearInterval(timerToutch)
+            timerToutch = setInterval(inputFunction, timeReInput)
+        }
+    }
+
+
 
     function droping() {
         if (state==='play') {
