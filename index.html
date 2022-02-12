@@ -7,7 +7,7 @@
     <title>Basic Tetris</title>
   </head>
   <body>
-    <div class="container">
+    <div class="container" id="frame">
         <div class="uper-grid">
             <div class="grid"></div>
         </div>
@@ -32,6 +32,25 @@
             <button class="direction-button down" role="button" id="down-button">
                 <span class="visually-hidden">down</span>
             </button>
+        </div>
+        <div class="mode-container">
+            <h1>Modes</h1>
+            <label class="mode">Gravity
+            <input type="checkbox" checked="checked" id="gravity-check">
+            <span class="checkmark"></span>
+            </label>
+            <label class="mode">4 squares
+            <input type="checkbox" checked="checked" id="four-check">
+            <span class="checkmark"></span>
+            </label>
+            <label class="mode">Homeostasis
+            <input type="checkbox" checked="checked" id="homeo-check">
+            <span class="checkmark"></span>
+            </label>
+            <label class="mode">Clearance
+            <input type="checkbox" checked="checked" id="clearance-check">
+            <span class="checkmark"></span>
+            </label>
         </div>
     </div>
   </body>

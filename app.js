@@ -30,6 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const upBtn = document.querySelector('#up-button')
     const rightBtn = document.querySelector('#right-button')
     const downBtn = document.querySelector('#down-button')
+
+    var modeGravity = document.querySelector('#gravity-check')
+    var modeFour = document.querySelector('#four-check')
+    var modeHomeo = document.querySelector('#homeo-check')
+    var modeClearance = document.querySelector('#clearance-check')
     
     const scoreDisplay = document.querySelector('#score')
     const levelDisplay = document.querySelector('#level')
@@ -51,15 +56,16 @@ document.addEventListener('DOMContentLoaded', () => {
     let timerId
     const speedDial = 6
     const speedTable = [80, 65, 50, 40, 32, 25, 20, 17, 15, 13]
-    let timeStep = speedDial * speedTable[level]
+    let timeStep = speedDial * speedTable[Math.min(level, speedTable.length-1)]
     let drop = 1
+    let filledRows = []
     let bonus = 0
     const bonusTable = [0, 100, 400, 900, 2500]
     const levelTable = [10, 60, 90, 120, 150, 200, 250, 300, 350]
 
     let timerToutch
     const timeToogle = 600
-    const timeReInput = 200
+    const timeReInput = 50
 
 
     //Tetrominoes
@@ -127,17 +133,35 @@ document.addEventListener('DOMContentLoaded', () => {
         display:    [0, 1, displayWidth+1, displayWidth+2]
     }
 
-    const theTetrominoes = [iTetromino, oTetromino, tTetromino, jTetromino, lTetromino, sTetromino, zTetromino]
+    const monomino = {
+        rotations: [[2],
+                    [2],
+                    [2],
+                    [2]],
+        color: '#903cf3',
+        display:    [displayWidth+1]
+    }
+
+    const theTetrominoes = [monomino, iTetromino, oTetromino, tTetromino, jTetromino, lTetromino, sTetromino, zTetromino]
+    const numTetrominoes = 7
+    const numMonomino = 1
 
     const startPosition = 3
     let currentPosition = startPosition
     let currentRotation = 0
     const displayIndex = displayWidth*2+1
 
-    let nextRandom = Math.floor(Math.random()*theTetrominoes.length)
-    let random = Math.floor(Math.random()*theTetrominoes.length)
-    let current = theTetrominoes[random]['rotations'][currentRotation]
+    function newRandom() {
+        if (modeFour.checked == true) {
+            return Math.floor(numMonomino + Math.random()*numTetrominoes)
+        } else {
+            return Math.floor(Math.random()*numMonomino)
+        }
+    }
 
+    let nextRandom = newRandom()
+    let random = newRandom()
+    let current = theTetrominoes[random]['rotations'][currentRotation]
 
     //Display
 
@@ -182,20 +206,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     document.addEventListener('keydown', control)
 
-    leftBtn.addEventListener('mousedown', () => {moveLeft()})
-    upBtn.addEventListener('mousedown', () => {rotate()})
-    rightBtn.addEventListener('mousedown', () => {moveRight()})
-    downBtn.addEventListener('mousedown', () => {droping()})
+    leftBtn.addEventListener('mousedown', () => {touch(moveLeft)})
+    upBtn.addEventListener('mousedown', () => {touch(rotate)})
+    rightBtn.addEventListener('mousedown', () => {touch(moveRight)})
+    downBtn.addEventListener('mousedown', () => {touch(droping)})
 
     leftBtn.addEventListener('touchstart', () => {touch(moveLeft)})
     upBtn.addEventListener('touchstart', () => {touch(rotate)})
     rightBtn.addEventListener('touchstart', () => {touch(moveRight)})
     downBtn.addEventListener('touchstart', () => {touch(droping)})
 
-    leftBtn.addEventListener('touchend', () => {clearInterval(timerToutch)})
-    upBtn.addEventListener('touchend', () => {clearInterval(timerToutch)})
-    rightBtn.addEventListener('touchend', () => {clearInterval(timerToutch)})
-    downBtn.addEventListener('touchend', () => {clearInterval(timerToutch)})
+    document.addEventListener('mouseup', () => {clearInterval(timerToutch)})
+
+    document.addEventListener('touchend', () => {clearInterval(timerToutch)})
 
     function touch(inputFunction) {
         inputFunction()
@@ -211,13 +234,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
-
     function droping() {
         if (state==='play') {
             drop ++
             clearInterval(timerId)
-            timerId = setInterval(moveDown, timeStep)
+            timerId = setInterval(gravity, timeStep)
+            moveDown()
+        }
+    }
+
+    function gravity() {
+        if (modeGravity.checked == true) {
             moveDown()
         }
     }
@@ -244,7 +271,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return current.some(index=> (currentPosition + index) % width === 0)
       }
       
-
     function moveLeft() {
         if (state==='play') {
             undraw()
@@ -322,13 +348,15 @@ document.addEventListener('DOMContentLoaded', () => {
             state = 'play'
             startBtn.style.backgroundColor = greenColor
             draw()
+            timerColor = null
             clearInterval(timerColor)
-            timerId = setInterval(moveDown, timeStep)
+            timerId = setInterval(gravity, timeStep)
             displayShape()
         } else if (state === 'prestart' || state === 'over') {
             restart()
         } else if (state === 'play') {
             state = 'pause'
+            timerColor = null
             timerColor = setInterval(blink(startBtn, greenLight, greenColor), timeBlink)
             clearInterval(timerId)
         }
@@ -338,6 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state = 'play'
         startBtn.style.backgroundColor = greenColor
         restartBtn.style.backgroundColor = redColor
+        timerColor = null
         clearInterval(timerColor)
         squares.forEach(square => {
             square.classList.remove('tetromino')
@@ -353,17 +382,18 @@ document.addEventListener('DOMContentLoaded', () => {
         levelDisplay.innerHTML = level
         scoreDisplay.innerHTML = score
         rowDisplay.innerHTML = rowCount
-        timeStep = speedDial * speedTable[level]
+        timeStep = speedDial * speedTable[Math.min(level, speedTable.length-1)]
         drop = 1
+        filledRows = []
         bonus = 0
         currentPosition = startPosition
         currentRotation = 0
-        nextRandom = Math.floor(Math.random()*theTetrominoes.length)
-        random = Math.floor(Math.random()*theTetrominoes.length)
+        nextRandom = newRandom()
+        random = newRandom()
         current = theTetrominoes[random]['rotations'][currentRotation]
         clearInterval(timerId)
         draw()
-        timerId = setInterval(moveDown, timeStep)
+        timerId = setInterval(gravity, timeStep)
         displayShape()
     }
 
@@ -373,12 +403,12 @@ document.addEventListener('DOMContentLoaded', () => {
         addScore()
 
         random = nextRandom
-        nextRandom = Math.floor(Math.random() * theTetrominoes.length)
         current = theTetrominoes[random]['rotations'][currentRotation]
+        nextRandom = newRandom()
         currentPosition = startPosition
         draw()
         displayShape()
-        timerId = setInterval(moveDown, timeStep)
+        timerId = setInterval(gravity, timeStep)
         gameOver()
     }
 
@@ -387,31 +417,42 @@ document.addEventListener('DOMContentLoaded', () => {
         scoreDisplay.innerHTML = score
         drop = 1
         let bonusRow = 0
+        
         for (let i = 0; i < width*depth; i +=width) {
             const row = Array.from(Array(width), (_, j) => j+i)
 
-            if(row.every(index => squares[index].classList.contains('taken'))) {
-                rowCount ++
-                bonusRow ++
-                rowDisplay.innerHTML = rowCount
-                row.forEach(index => {
-                    squares[index].classList.remove('taken')
-                    squares[index].classList.remove('tetromino')
-                    squares[index].style.backgroundColor = ''
-                })
-                const squaresRemoved = squares.splice(i, width)
-                squares = squaresRemoved.concat(squares)
-                squares.forEach(cell => grid.appendChild(cell))
+            if (row.every(index => squares[index].classList.contains('taken'))) {
+                if (modeClearance.checked == true) {
+                    if (filledRows.includes(i)) {
+                        filledRows = filledRows.filter(item => item !== i)
+                    } else {
+                        rowCount ++
+                        bonusRow ++
+                    }
+                    rowDisplay.innerHTML = rowCount
+                    row.forEach(index => {
+                        squares[index].classList.remove('taken')
+                        squares[index].classList.remove('tetromino')
+                        squares[index].style.backgroundColor = ''
+                    })
+                    const squaresRemoved = squares.splice(i, width)
+                    squares = squaresRemoved.concat(squares)
+                    squares.forEach(cell => grid.appendChild(cell))
+                } else if (!filledRows.includes(i)) {
+                    filledRows.push(i)
+                    rowCount ++
+                    bonusRow ++
+                }
             }
         }
-        bonus += bonusTable[bonusRow]
-        if(rowCount>=levelTable[level]){
+        bonus += bonusTable[Math.min(bonusRow, bonusTable.length-1)]
+        if(modeClearance.checked == true && rowCount >= levelTable[Math.min(level, levelTable.length-1)]) {
             level ++
             score += bonus
             levelDisplay.innerHTML = level
             scoreDisplay.innerHTML = score
             bonus = 0
-            timerId = speedDial * speedTable[level]
+            timerId = speedDial * speedTable[Math.min(level, speedTable.length-1)]
         }
     }
 
@@ -420,6 +461,10 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(timerId)
             state = 'over'
             timerColor = setInterval(blink(restartBtn, redLight, redColor), timeBlink)
+            if (modeClearance.checked == false) {
+                score += bonus
+                scoreDisplay.innerHTML = score
+            }
         }
     }
 
