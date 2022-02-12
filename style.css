@@ -295,7 +295,7 @@ body {
   vertical-align: middle;
   white-space: nowrap;
   width: auto;
-  height: auto;
+  height: 100%;
 }
 
 .mode {
