@@ -55,7 +55,7 @@ body {
 
 .mini-grid {
   width: 150px;
-  height: 150px;
+  height: 180px;
   display: flex;
   flex-wrap: wrap;
   background-color: rgba(0, 0, 0, 0.5);

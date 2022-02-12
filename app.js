@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const width = 10
     const depth = 20
     const displayWidth = 5
-    const displayDepth = 5
+    const displayDepth = 6
 
     let grid = document.getElementsByClassName('grid')[0];
     for (let i = 0; i < width*(depth+1); i++) {
@@ -66,69 +66,69 @@ document.addEventListener('DOMContentLoaded', () => {
                     [width*2, width*2+1, width*2+2, width*2+3],
                     [1, width+1, width*2+1, width*3+1]],
         color: '#68cdff',
-        display:    [0+1, displayWidth+1, displayWidth*2+1, displayWidth*3+1]
+        display:    [-displayWidth+1, 1, displayWidth+1, displayWidth*2+1]
     }
 
     const oTetromino = {
-        rotations: [[0, 1, width, width+1],
-                    [0, 1, width, width+1],
-                    [0, 1, width, width+1],
-                    [0, 1, width, width+1]],
+        rotations: [[1, 2, width+1, width+2],
+                    [1, 2, width+1, width+2],
+                    [1, 2, width+1, width+2],
+                    [1, 2, width+1, width+2]],
         color: '#ffff09',
         display:    [0, 1, displayWidth, displayWidth+1]
     }
 
     const tTetromino = {
-        rotations: [[1, width, width+1, width+2],
-                    [1, width+1, width+2, width*2+1],
-                    [width, width+1, width+2, width*2+1],
-                    [1, width, width+1, width*2+1]],
+        rotations: [[2, width+1, width+2, width+3],
+                    [2, width+2, width+3, width*2+2],
+                    [width+1, width+2, width+3, width*2+2],
+                    [2, width+1, width+2, width*2+2]],
         color: '#cd04ff',
         display:    [1, displayWidth, displayWidth+1, displayWidth+2]
     }
 
     const jTetromino = {
-        rotations: [[0, width, width+1, width+2],
-                    [1, 2, width+1, width*2+1],
-                    [width, width+1, width+2, width*2+2],
-                    [1, width+1, width*2, width*2+1]],
+        rotations: [[1, width+1, width+2, width+3],
+                    [2, 3, width+2, width*2+2],
+                    [width+1, width+2, width+3, width*2+3],
+                    [2, width+2, width*2+1, width*2+2]],
         color: '#0601ff',
         display:    [0, displayWidth, displayWidth+1, displayWidth+2]
     }
 
     const lTetromino = {
-        rotations: [[2, width, width+1, width+2],
-                    [1, width+1, width*2+1, width*2+2],
-                    [width, width+1, width+2, width*2],
-                    [0, 1, width+1, width*2+1]],
+        rotations: [[3, width+1, width+2, width+3],
+                    [2, width+2, width*2+2, width*2+3],
+                    [width+1, width+2, width+3, width*2+1],
+                    [1, 2, width+2, width*2+2]],
         color: '#ff6702',
         display:    [2, displayWidth, displayWidth+1, displayWidth+2]
     }
     
     const sTetromino = {
-        rotations: [[1, 2, width, width+1],
-                    [1, width+1, width+2, width*2+2],
-                    [width+1, width+2, width*2, width*2+1],
-                    [0, width, width+1, width*2+1]],
+        rotations: [[2, 3, width+1, width+2],
+                    [2, width+2, width+3, width*2+3],
+                    [width+2, width+3, width*2+1, width*2+2],
+                    [1, width+1, width+2, width*2+2]],
         color: '#0eff0a',
         display:    [1, 2, displayWidth, displayWidth+1]
     }
 
     const zTetromino = {
-        rotations: [[0, 1, width+1, width+2],
-                    [2, width+1, width+2, width*2+1],
-                    [width, width+1, width*2+1, width*2+2],
-                    [1, width, width+1, width*2]],
+        rotations: [[1, 2, width+2, width+3],
+                    [3, width+2, width+3, width*2+2],
+                    [width+1, width+2, width*2+2, width*2+3],
+                    [2, width+1, width+2, width*2+1]],
         color: '#ff0501',
         display:    [0, 1, displayWidth+1, displayWidth+2]
     }
 
     const theTetrominoes = [iTetromino, oTetromino, tTetromino, jTetromino, lTetromino, sTetromino, zTetromino]
 
-    const startPosition = 4
+    const startPosition = 3
     let currentPosition = startPosition
     let currentRotation = 0
-    const displayIndex = displayWidth+1
+    const displayIndex = displayWidth*2+1
 
     let nextRandom = Math.floor(Math.random()*theTetrominoes.length)
     let random = Math.floor(Math.random()*theTetrominoes.length)
@@ -353,7 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function addScore() {
-        score += Math.min(drop * (1+level) * (1+level + Math.floor(currentPosition/width)), 999)
+        score += Math.min(drop * (1+level) * (level + depth-Math.floor(currentPosition/width)), 999)
         scoreDisplay.innerHTML = score
         drop = 1
         let bonusRow = 0
