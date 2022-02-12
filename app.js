@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     [2, 3, width+2, width*2+2],
                     [width+1, width+2, width+3, width*2+3],
                     [2, width+2, width*2+1, width*2+2]],
-        color: '#0601ff',
+        color: '#6173ff',
         display:    [0, displayWidth, displayWidth+1, displayWidth+2]
     }
 
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     [3, width+2, width+3, width*2+2],
                     [width+1, width+2, width*2+2, width*2+3],
                     [2, width+1, width+2, width*2+1]],
-        color: '#ff0501',
+        color: '#e23030',
         display:    [0, 1, displayWidth+1, displayWidth+2]
     }
 
