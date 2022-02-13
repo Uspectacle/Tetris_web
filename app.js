@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     var modeProductive = document.querySelector('#productive-check') //
     var modeLava = document.querySelector('#lava-check') //
     var modeHard = document.querySelector('#hard-check') //
-    var modeInteraction = document.querySelector('#interaction-check') // TODO
+    var modeInteraction = document.querySelector('#interaction-check') //
     
     const scoreDisplay = document.querySelector('#score')
     const levelDisplay = document.querySelector('#level')
@@ -305,16 +305,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function moveOneDown(i) {
+        if (squares[i].classList.contains('tetromino') && !squares[i + width].classList.contains('ground')) {
+            if (squares[i].classList.contains('taken')) {
+                if (!squares[i + width].classList.contains('taken') || !modeInteraction.checked) {
+                    squares[i + width].classList.add('tetromino')
+                    squares[i + width].classList.add('taken')
+                    squares[i + width].style.backgroundColor = squares[i].style.backgroundColor
+                    squares[i].classList.remove('tetromino')
+                    squares[i].classList.remove('taken')
+                    squares[i].style.backgroundColor = ''
+                }
+            }
+        }
+    }
+
     function moveDown() {
         if (state==='play') {
-            if(modeGround.checked == false){
+            if (modeGround.checked == false){
                 const end = (depth-1) * width
                 const endRow = Array.from(Array(width), (_, i) => i+end)
                 sendToClear(endRow, end)
             }
             undraw()
             currentPosition += width
-            if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
+            if(superposition()) {
                 currentPosition -= width
                 draw()
                 if (modeProductive.checked == true) {
@@ -329,6 +344,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 clear()
                 draw()
             }
+            if (modeHomeo.checked == false) {
+                for (let i = width*(depth-1) -1 ; i > -1; i--) {
+                    moveOneDown(i)
+                }
+            }
         }
     }
 
@@ -338,13 +358,21 @@ document.addEventListener('DOMContentLoaded', () => {
       
       function isAtLeft() {
         return current.some(index=> (currentPosition + index) % width === 0)
-      }
-      
+    }
+    
+    function superposition() {
+        if (modeInteraction.checked) {
+            return current.some(index => squares[currentPosition + index].classList.contains('taken'))
+        } else {
+            return current.some(index => squares[currentPosition + index].classList.contains('ground'))
+        }
+    }
+
     function moveLeft() {
         if (state==='play') {
             undraw()
             if(!isAtLeft()) currentPosition -=1
-            if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
+            if(superposition()) {
                 currentPosition +=1
             }
             draw()
@@ -355,7 +383,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (state==='play') {
             undraw()
             if(!isAtRight()) currentPosition +=1
-            if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
+            if (superposition()) {
                 currentPosition -=1
             }
             draw()
@@ -389,7 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     } 
                 }
             }
-            if (current.some(index => squares[currentPosition + index].classList.contains('taken'))){
+            if (superposition()){
                 currentRotation = tempRotation
                 currentPosition = tempPosition
                 current = currentTetromino[currentRotation]
@@ -493,7 +521,7 @@ document.addEventListener('DOMContentLoaded', () => {
         draw()
         displayShape()
         timerId = setInterval(gravity, timeStep)
-        if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
+        if(superposition()) {
             if (modeOpposite.checked == true) {
                 let oppositeScore = 0
                 squares.forEach(square => {
