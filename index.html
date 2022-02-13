@@ -19,6 +19,10 @@
             <h3 class="data" id="score-text">Score : <span id="score">0</span></h3>
             <button class="button-19" role="button" id="start-button">▶ / II</button>
             <button class="button-19" role="button" id="restart-button">↺</button>
+            <audio controls loop id="music" class="not-to-see">
+                <source src="music.mp3" type="audio/mpeg">
+            </audio>                
+            <button class="button-19" role="button" id="music-button">♫</button>
         </div>
         <div class="directional-buttons">
             <button class="direction-button up" role="button" id="up-button">
@@ -48,6 +52,10 @@
             <input type="checkbox" checked="checked" id="clearance-check">
             <span class="checkmark"></span>
             </label>
+            <label class="mode">Colors
+            <input type="checkbox" checked="checked" id="eyes-check">
+            <span class="checkmark"></span>
+            </label>
             <label class="mode">Homeostasis
             <input type="checkbox" checked="checked" id="homeo-check">
             <span class="checkmark"></span>
@@ -68,16 +76,12 @@
             <input type="checkbox" id="roblox-check">
             <span class="checkmark"></span>
             </label>
-            <label class="mode">Hard
+            <label class="mode">Fast
             <input type="checkbox" id="hard-check">
             <span class="checkmark"></span>
             </label>
             <label class="mode">Lava
             <input type="checkbox" id="lava-check">
-            <span class="checkmark"></span>
-            </label>
-            <label class="mode">AutoClear
-            <input type="checkbox" id="autoclear-check">
             <span class="checkmark"></span>
             </label>
             <label class="mode">Opposite

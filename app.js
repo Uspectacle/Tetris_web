@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     for (let i = 0; i < width*(depth+1); i++) {
         let element = document.createElement('div');
         if (i >= width*depth) {
+            element.classList.add('ground');
             element.classList.add('taken');
         }
         grid.appendChild(element);
@@ -24,6 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const displaySquares = document.querySelectorAll('.mini-grid div')
 
+    const music = document.getElementById("music");
+    const musicBtn = document.querySelector('#music-button')
+
     const startBtn = document.querySelector('#start-button')
     const restartBtn = document.querySelector('#restart-button')
     const leftBtn = document.querySelector('#left-button')
@@ -31,19 +35,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const rightBtn = document.querySelector('#right-button')
     const downBtn = document.querySelector('#down-button')
 
-    var modeGravity = document.querySelector('#gravity-check')
-    var modeFour = document.querySelector('#four-check')
-    var modeMono = document.querySelector('#mono-check')
-    var modeRoblox = document.querySelector('#roblox-check')
-    var modeHomeo = document.querySelector('#homeo-check')
-    var modeClearance = document.querySelector('#clearance-check')
-    var modeAutoClear = document.querySelector('#autoclear-check')
-    var modeOpposite = document.querySelector('#opposite-check')
-    var modeGround = document.querySelector('#ground-check')
-    var modeProductive = document.querySelector('#productive-check')
-    var modeLava = document.querySelector('#lava-check')
-    var modeHard = document.querySelector('#hard-check')
-    var modeInteraction = document.querySelector('#interaction-check')
+    var modeGravity = document.querySelector('#gravity-check') //
+    var modeFour = document.querySelector('#four-check') //
+    var modeMono = document.querySelector('#mono-check') //
+    var modeRoblox = document.querySelector('#roblox-check') //
+    var modeHomeo = document.querySelector('#homeo-check') // TODO
+    var modeClearance = document.querySelector('#clearance-check') //
+    var modeEyes = document.querySelector('#eyes-check') //
+    var modeOpposite = document.querySelector('#opposite-check') //
+    var modeGround = document.querySelector('#ground-check') //
+    var modeProductive = document.querySelector('#productive-check') //
+    var modeLava = document.querySelector('#lava-check') //
+    var modeHard = document.querySelector('#hard-check') //
+    var modeInteraction = document.querySelector('#interaction-check') // TODO
     
     const scoreDisplay = document.querySelector('#score')
     const levelDisplay = document.querySelector('#level')
@@ -61,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let rowCount = 0
     let level = 0
     let state = 'prestart'
+    let musicState = false
     
     let timerId
     const speedDial = 6
@@ -162,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     Array.from(Array(width), (_, i) => i+width-startPosition),
                     Array.from(Array(width), (_, i) => i+width-startPosition)],
         color: '#ebddfc',
-        display:    Array.from(Array(width), (_, i) => displayWidth*i-displayIndex+2)
+        display:    Array.from(Array(displayDepth), (_, i) => displayWidth*i-displayIndex+2)
     }
 
     const nomino = {
@@ -179,7 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function newRandom() {
         let indexValid = []
-        console.log(indexTetrominoes)
         if (modeFour.checked == true) {
             indexValid = indexValid.concat(indexTetrominoes)
         }
@@ -192,7 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (indexValid.lenght == 0) {
             indexValid = indexValid.concat(indexNomino)
         }
-        console.log(indexValid)
         return indexValid[Math.floor(Math.random()*indexValid.length)]
     }
 
@@ -205,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function draw() {
         current.forEach(index => {
             squares[currentPosition + index].classList.add('tetromino')
-            squares[currentPosition + index].style.backgroundColor = theTetrominoes[random]['color']
+            squares[currentPosition + index].style.backgroundColor = getColor(random)
         })
     }
 
@@ -223,10 +226,17 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         theTetrominoes[nextRandom]['display'].forEach( index => {
             displaySquares[displayIndex + index].classList.add('tetromino')
-            displaySquares[displayIndex + index].style.backgroundColor = theTetrominoes[nextRandom]['color']
+            displaySquares[displayIndex + index].style.backgroundColor = getColor(nextRandom)
         })
     }
 
+    function getColor(index) {
+        if (modeEyes.checked == true) {
+            return theTetrominoes[index]['color']
+        } else {
+            return ''
+        }
+    }
 
     //Controles
 
@@ -281,23 +291,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function gravity() {
-        if (modeGravity.checked == true) {
+        if (modeHard.checked == true) {
+            let time = 0
+            while(state == 'play' && modeHard.checked == true && time < 1000) {
+                time++
+                console.log(time)
+                if (modeGravity.checked == true) {
+                    moveDown()
+                }
+            }
+        } else if (modeGravity.checked == true) {
             moveDown()
         }
     }
 
     function moveDown() {
         if (state==='play') {
+            if(modeGround.checked == false){
+                const end = (depth-1) * width
+                const endRow = Array.from(Array(width), (_, i) => i+end)
+                sendToClear(endRow, end)
+            }
             undraw()
             currentPosition += width
             if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
                 currentPosition -= width
                 draw()
-                if (modeProductive == true) {
+                if (modeProductive.checked == true) {
                     location.replace("https://www.linkedin.com/jobs/")
+                }
+                if (modeLava.checked == true) {
+                    gameOver()
+                    return
                 }
                 freeze()
             } else {
+                clear()
                 draw()
             }
         }
@@ -305,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function isAtRight() {
         return current.some(index=> (currentPosition + index + 1) % width === 0)  
-      }
+    }
       
       function isAtLeft() {
         return current.some(index=> (currentPosition + index) % width === 0)
@@ -333,22 +362,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function checkRotatedPosition(P){
-        P = P || currentPosition        //get current position.  Then, check if the piece is near the left side.
-        if ((P+1) % width < 4) {        //add 1 because the position index can be 1 less than where the piece is (with how they are indexed).     
-            if (isAtRight()){           //use actual position to check if it's flipped over to right side
-                currentPosition += 1    //if so, add one to wrap it back around
-                checkRotatedPosition(P) //check again.  Pass position from start, since long block might need to move more.
-            }
-        }
-        else if (P % width > 5) {
-            if (isAtLeft()){
-                currentPosition -= 1
-            checkRotatedPosition(P)
-            }
-        }
-    }
-      
     function rotate() {
         if (state==='play') {
             let tempPosition = currentPosition
@@ -356,8 +369,26 @@ document.addEventListener('DOMContentLoaded', () => {
             let currentTetromino = theTetrominoes[random]['rotations']
             undraw()
             currentRotation = (currentRotation+1) % currentTetromino.length
+            right = isAtRight()
+            left = isAtLeft()
             current = currentTetromino[currentRotation]
-            checkRotatedPosition()
+            if (right ^ left) {
+                while(true) {
+                    if (right) {
+                        if (isAtLeft()) {
+                            currentPosition -= 1
+                        } else {
+                            break
+                        }
+                    } else {
+                        if (isAtRight()) {
+                            currentPosition += 1
+                        } else {
+                            break
+                        }
+                    } 
+                }
+            }
             if (current.some(index => squares[currentPosition + index].classList.contains('taken'))){
                 currentRotation = tempRotation
                 currentPosition = tempPosition
@@ -372,7 +403,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function blink(button, newColor, oldColor) {
         return function () {
-            console.log(button)
             blinkState = !blinkState
             if(blinkState) {
                 button.style.backgroundColor = newColor
@@ -381,6 +411,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
+
+    musicBtn.addEventListener('click', () => {
+        musicState = !musicState
+        if (musicState) {
+            music.play()
+            musicBtn.style.backgroundColor = redColor
+        } else {
+            music.pause()
+            musicBtn.style.backgroundColor = greenColor
+        }
+    })
 
     restartBtn.addEventListener('click', () => {restart()})
 
@@ -391,10 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
             startBtn.style.backgroundColor = greenColor
             draw()
             blinkState = false
-            console.log('STOP')
-            console.log(timerColor)
             clearInterval(timerColor)
-            console.log(timerColor)
             timerId = setInterval(gravity, timeStep)
             displayShape()
         } else if (state === 'prestart' || state === 'over') {
@@ -448,7 +486,6 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInterval(timerId)
         current.forEach(index => squares[currentPosition + index].classList.add('taken'))
         addScore()
-
         random = nextRandom
         current = theTetrominoes[random]['rotations'][currentRotation]
         nextRandom = newRandom()
@@ -456,7 +493,27 @@ document.addEventListener('DOMContentLoaded', () => {
         draw()
         displayShape()
         timerId = setInterval(gravity, timeStep)
-        gameOver()
+        if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
+            if (modeOpposite.checked == true) {
+                let oppositeScore = 0
+                squares.forEach(square => {
+                    if (square.classList.contains('tetromino')) {
+                        oppositeScore ++
+                    }
+                    square.classList.remove('tetromino')
+                    square.classList.remove('taken')
+                    square.style.backgroundColor = ''
+                })
+                rowCount += Math.floor(oppositeScore/width)
+                rowDisplay.innerHTML = rowCount
+                bonus += bonusTable[Math.min(oppositeScore, bonusTable.length-1)]
+                for (let i = 0; i < width; i++) {
+                    squares[width*depth +i].classList.add('taken');
+                }
+            } else {
+                gameOver()
+            }
+        }
     }
 
     function sendToClear(row, i) {
@@ -487,11 +544,13 @@ document.addEventListener('DOMContentLoaded', () => {
         scoreDisplay.innerHTML = score
         drop = 1
         let bonusRow = 0
-        
         for (let i = 0; i < width*depth; i +=width) {
             const row = Array.from(Array(width), (_, j) => j+i)
-
             if (row.every(index => squares[index].classList.contains('taken'))) {
+                if (modeOpposite.checked == true) {
+                    gameOver()
+                    return
+                }
                 if (modeClearance.checked == true) {
                     if (filledRows.includes(i)) {
                         filledRows = filledRows.filter(item => item !== i)
@@ -509,7 +568,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         bonus += bonusTable[Math.min(bonusRow, bonusTable.length-1)]
-        if(modeClearance.checked == true && rowCount >= levelTable[Math.min(level, levelTable.length-1)]) {
+        if(modeClearance.checked == true && rowCount >= levelTreshold(level)) {
             level ++
             score += bonus
             levelDisplay.innerHTML = level
@@ -520,16 +579,19 @@ document.addEventListener('DOMContentLoaded', () => {
         clear()
     }
 
+    function levelTreshold(level) {
+        let len = levelTable.length-1
+        return levelTable[Math.min(level, len)] + (levelTable[len]-levelTable[len-1]) * Math.max(0, level - len)
+    }
+
     function gameOver() {
-        if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
-            clearInterval(timerId)
-            state = 'over'
-            grid.style.backgroundColor = '#df000080'
-            timerColor = setInterval(blink(restartBtn, redLight, redColor), timeBlink)
-            if (modeClearance.checked == false) {
-                score += bonus
-                scoreDisplay.innerHTML = score
-            }
+        clearInterval(timerId)
+        state = 'over'
+        grid.style.backgroundColor = '#df000080'
+        timerColor = setInterval(blink(restartBtn, redLight, redColor), timeBlink)
+        if (modeClearance.checked == false) {
+            score += bonus
+            scoreDisplay.innerHTML = score
         }
     }
 

@@ -60,7 +60,7 @@ body {
 }
 
 .tetromino {
-  background-color: blue;
+  background-color: rgba(0, 0, 0, 0);
   border-radius: 20%;
   outline: solid;
   outline-color: rgba(0, 0, 0, 0.2);
@@ -125,7 +125,7 @@ body {
   margin: 0;
   outline: none;
   overflow: visible;
-  padding: 13px 16px;
+  padding: 13px 16px 13px 16px;
   text-align: center;
   text-transform: uppercase;
   touch-action: manipulation;
@@ -363,4 +363,8 @@ body {
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
+}
+
+.not-to-see {
+  visibility: hidden;
 }
