@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (modeRoblox.checked == true) {
             indexValid = indexValid.concat(indexRowmino)
         }
-        if (indexValid.lenght == 0) {
+        if (indexValid.length == 0) {
             indexValid = indexValid.concat(indexNomino)
         }
         return indexValid[Math.floor(Math.random()*indexValid.length)]
