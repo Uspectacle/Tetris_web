@@ -33,8 +33,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     var modeGravity = document.querySelector('#gravity-check')
     var modeFour = document.querySelector('#four-check')
+    var modeMono = document.querySelector('#mono-check')
+    var modeRoblox = document.querySelector('#roblox-check')
     var modeHomeo = document.querySelector('#homeo-check')
     var modeClearance = document.querySelector('#clearance-check')
+    var modeAutoClear = document.querySelector('#autoclear-check')
+    var modeOpposite = document.querySelector('#opposite-check')
+    var modeGround = document.querySelector('#ground-check')
+    var modeProductive = document.querySelector('#productive-check')
+    var modeLava = document.querySelector('#lava-check')
+    var modeHard = document.querySelector('#hard-check')
+    var modeInteraction = document.querySelector('#interaction-check')
     
     const scoreDisplay = document.querySelector('#score')
     const levelDisplay = document.querySelector('#level')
@@ -59,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let timeStep = speedDial * speedTable[Math.min(level, speedTable.length-1)]
     let drop = 1
     let filledRows = []
+    let toClear = []
     let bonus = 0
     const bonusTable = [0, 100, 400, 900, 2500]
     const levelTable = [10, 60, 90, 120, 150, 200, 250, 300, 350]
@@ -67,6 +77,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const timeToogle = 600
     const timeReInput = 50
 
+    const startPosition = 3
+    let currentPosition = startPosition
+    let currentRotation = 0
+    const displayIndex = displayWidth*2+1
 
     //Tetrominoes
 
@@ -142,21 +156,44 @@ document.addEventListener('DOMContentLoaded', () => {
         display:    [displayWidth+1]
     }
 
-    const theTetrominoes = [monomino, iTetromino, oTetromino, tTetromino, jTetromino, lTetromino, sTetromino, zTetromino]
-    const numTetrominoes = 7
-    const numMonomino = 1
+    const rowmino = {
+        rotations: [Array.from(Array(width), (_, i) => i+width-startPosition),
+                    Array.from(Array(width), (_, i) => i+width-startPosition),
+                    Array.from(Array(width), (_, i) => i+width-startPosition),
+                    Array.from(Array(width), (_, i) => i+width-startPosition)],
+        color: '#ebddfc',
+        display:    Array.from(Array(width), (_, i) => displayWidth*i-displayIndex+2)
+    }
 
-    const startPosition = 3
-    let currentPosition = startPosition
-    let currentRotation = 0
-    const displayIndex = displayWidth*2+1
+    const nomino = {
+        rotations: [[], [], [], []],
+        color: '#000000',
+        display:    []
+    }
+
+    const theTetrominoes = [iTetromino, oTetromino, tTetromino, jTetromino, lTetromino, sTetromino, zTetromino, monomino, rowmino, nomino]
+    const indexMonomino = [7]
+    const indexRowmino = [8]
+    const indexNomino = [9]
+    const indexTetrominoes = Array.from(Array(7), (_, i) => i)
 
     function newRandom() {
+        let indexValid = []
+        console.log(indexTetrominoes)
         if (modeFour.checked == true) {
-            return Math.floor(numMonomino + Math.random()*numTetrominoes)
-        } else {
-            return Math.floor(Math.random()*numMonomino)
+            indexValid = indexValid.concat(indexTetrominoes)
         }
+        if (modeMono.checked == true) {
+            indexValid = indexValid.concat(indexMonomino)
+        }
+        if (modeRoblox.checked == true) {
+            indexValid = indexValid.concat(indexRowmino)
+        }
+        if (indexValid.lenght == 0) {
+            indexValid = indexValid.concat(indexNomino)
+        }
+        console.log(indexValid)
+        return indexValid[Math.floor(Math.random()*indexValid.length)]
     }
 
     let nextRandom = newRandom()
@@ -256,6 +293,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
                 currentPosition -= width
                 draw()
+                if (modeProductive == true) {
+                    location.replace("https://www.linkedin.com/jobs/")
+                }
                 freeze()
             } else {
                 draw()
@@ -332,6 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function blink(button, newColor, oldColor) {
         return function () {
+            console.log(button)
             blinkState = !blinkState
             if(blinkState) {
                 button.style.backgroundColor = newColor
@@ -346,17 +387,21 @@ document.addEventListener('DOMContentLoaded', () => {
     startBtn.addEventListener('click', () => {
         if (state === 'pause') {
             state = 'play'
+            grid.style.backgroundColor = '#00000080'
             startBtn.style.backgroundColor = greenColor
             draw()
-            timerColor = null
+            blinkState = false
+            console.log('STOP')
+            console.log(timerColor)
             clearInterval(timerColor)
+            console.log(timerColor)
             timerId = setInterval(gravity, timeStep)
             displayShape()
         } else if (state === 'prestart' || state === 'over') {
             restart()
         } else if (state === 'play') {
             state = 'pause'
-            timerColor = null
+            grid.style.backgroundColor = '#6EFF6B80'
             timerColor = setInterval(blink(startBtn, greenLight, greenColor), timeBlink)
             clearInterval(timerId)
         }
@@ -366,7 +411,8 @@ document.addEventListener('DOMContentLoaded', () => {
         state = 'play'
         startBtn.style.backgroundColor = greenColor
         restartBtn.style.backgroundColor = redColor
-        timerColor = null
+        grid.style.backgroundColor = '#00000080'
+        blinkState = false
         clearInterval(timerColor)
         squares.forEach(square => {
             square.classList.remove('tetromino')
@@ -385,6 +431,7 @@ document.addEventListener('DOMContentLoaded', () => {
         timeStep = speedDial * speedTable[Math.min(level, speedTable.length-1)]
         drop = 1
         filledRows = []
+        toClear = []
         bonus = 0
         currentPosition = startPosition
         currentRotation = 0
@@ -412,6 +459,29 @@ document.addEventListener('DOMContentLoaded', () => {
         gameOver()
     }
 
+    function sendToClear(row, i) {
+        row.forEach(index => {
+            if(squares[index].classList.contains('tetromino')) {
+                squares[index].style.backgroundColor = '#ffffff'
+            }
+        })
+        toClear.push([row, i])
+    }
+    
+    function clear() {
+        toClear.forEach(line => {
+            line[0].forEach(index => {
+                squares[index].classList.remove('taken')
+                squares[index].classList.remove('tetromino')
+                squares[index].style.backgroundColor = ''
+            })
+            const squaresRemoved = squares.splice(line[1], width)
+            squares = squaresRemoved.concat(squares)
+            squares.forEach(cell => grid.appendChild(cell))
+        })
+        toClear = []
+    }
+
     function addScore() {
         score += Math.min(drop * (1+level) * (level + depth-Math.floor(currentPosition/width)), 999)
         scoreDisplay.innerHTML = score
@@ -428,16 +498,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else {
                         rowCount ++
                         bonusRow ++
+                        rowDisplay.innerHTML = rowCount
                     }
-                    rowDisplay.innerHTML = rowCount
-                    row.forEach(index => {
-                        squares[index].classList.remove('taken')
-                        squares[index].classList.remove('tetromino')
-                        squares[index].style.backgroundColor = ''
-                    })
-                    const squaresRemoved = squares.splice(i, width)
-                    squares = squaresRemoved.concat(squares)
-                    squares.forEach(cell => grid.appendChild(cell))
+                    sendToClear(row, i)
                 } else if (!filledRows.includes(i)) {
                     filledRows.push(i)
                     rowCount ++
@@ -454,12 +517,14 @@ document.addEventListener('DOMContentLoaded', () => {
             bonus = 0
             timerId = speedDial * speedTable[Math.min(level, speedTable.length-1)]
         }
+        clear()
     }
 
     function gameOver() {
         if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
             clearInterval(timerId)
             state = 'over'
+            grid.style.backgroundColor = '#df000080'
             timerColor = setInterval(blink(restartBtn, redLight, redColor), timeBlink)
             if (modeClearance.checked == false) {
                 score += bonus
