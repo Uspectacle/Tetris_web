@@ -291,6 +291,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function gravity() {
+        if (random == indexNomino[0]){
+            random = nextRandom
+            current = theTetrominoes[random]['rotations'][currentRotation]
+            nextRandom = newRandom()
+            currentPosition = startPosition
+            draw()
+            displayShape()
+        }
         if (modeHard.checked == true) {
             let time = 0
             while(state == 'play' && modeHard.checked == true && time < 1000) {
