@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    const isMobile = navigator.userAgentData.mobile
     
     //Declaration
 
@@ -252,21 +253,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     document.addEventListener('keydown', control)
+    
+    if (isMobile) {
+        leftBtn.addEventListener('touchstart', () => {touch(moveLeft)})
+        upBtn.addEventListener('touchstart', () => {touch(rotate)})
+        rightBtn.addEventListener('touchstart', () => {touch(moveRight)})
+        downBtn.addEventListener('touchstart', () => {touch(droping)})
 
-    leftBtn.addEventListener('mousedown', () => {touch(moveLeft)})
-    upBtn.addEventListener('mousedown', () => {touch(rotate)})
-    rightBtn.addEventListener('mousedown', () => {touch(moveRight)})
-    downBtn.addEventListener('mousedown', () => {touch(droping)})
+        document.addEventListener('touchend', () => {clearInterval(timerToutch)})
 
-    // leftBtn.addEventListener('touchstart', () => {touch(moveLeft)})
-    // upBtn.addEventListener('touchstart', () => {touch(rotate)})
-    // rightBtn.addEventListener('touchstart', () => {touch(moveRight)})
-    // downBtn.addEventListener('touchstart', () => {touch(droping)})
+    } else {
+        leftBtn.addEventListener('mousedown', () => {touch(moveLeft)})
+        upBtn.addEventListener('mousedown', () => {touch(rotate)})
+        rightBtn.addEventListener('mousedown', () => {touch(moveRight)})
+        downBtn.addEventListener('mousedown', () => {touch(droping)})
 
-    document.addEventListener('mouseup', () => {clearInterval(timerToutch)})
-
-    document.addEventListener('touchend', () => {clearInterval(timerToutch)})
-
+        document.addEventListener('mouseup', () => {clearInterval(timerToutch)})
+    }
+    
     function touch(inputFunction) {
         inputFunction()
         clearInterval(timerToutch)
