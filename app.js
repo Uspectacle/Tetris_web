@@ -242,13 +242,13 @@ document.addEventListener('DOMContentLoaded', () => {
     //Controles
 
     function control(e) {
-        if(e.keyCode == 37) {
+        if(e.code == "KeyA") {
             moveLeft()
-        } else if(e.keyCode == 38) {
+        } else if(e.code == "KeyW") {
             rotate()
-        } else if(e.keyCode == 39) {
+        } else if(e.code == "KeyD") {
             moveRight()
-        } else if(e.keyCode == 40) {
+        } else if(e.code == "KeyS") {
             droping()
         }
     }
@@ -270,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.addEventListener('mouseup', () => {clearInterval(timerToutch)})
     }
-    
+
     function touch(inputFunction) {
         inputFunction()
         clearInterval(timerToutch)
