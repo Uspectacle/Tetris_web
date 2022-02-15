@@ -172,8 +172,8 @@ body {
   margin-left: 50px;
   margin-right: 50px;
   margin-top: 50px;
-  width: 16rem;
-  height: 16rem;
+  width: 32rem;
+  height: 32rem;
   display: grid;
   grid-gap: 0.5rem;
   grid-template-columns: 45fr 60fr 45fr;
@@ -195,8 +195,8 @@ body {
   display: block;
   content: "";
   position: absolute;
-  width: 4.25rem;
-  height: 4.25rem;
+  width: 8.8rem;
+  height: 8.8rem;
   transform: rotate(45deg);
   background: currentcolor;
 }
@@ -205,7 +205,7 @@ body {
   display: block;
   content: "";
   position: absolute;
-  border: 2rem solid transparent;
+  border: 4rem solid transparent;
   color: rgba(255, 250, 250, 0.6);
 }
 
@@ -219,58 +219,58 @@ body {
 
 .up {
   grid-area: up;
-  border-radius: 0.5rem 0.5rem 0 0;
+  border-radius: 1rem 1rem 0 0;
 }
 .up:before {
-  left: calc(50% - 2.125rem);
-  bottom: -2.125rem;
+  left: calc(50% - 4.4rem);
+  bottom: -4.4rem;
 }
 .up:after {
   border-bottom-color: currentcolor;
-  left: calc(50% - 2rem);
-  top: -1rem;
+  left: calc(50% - 4rem);
+  top: -2rem;
 }
 
 .left {
   grid-area: left;
-  border-radius: 0.5rem 0 0 0.5rem;
+  border-radius: 1rem 0 0 1rem;
 }
 .left:before {
-  right: -2.125rem;
-  top: calc(50% - 2.125rem);
+  right: -4.4rem;
+  top: calc(50% - 4.4rem);
 }
 .left:after {
   border-right-color: currentcolor;
-  top: calc(50% - 2rem);
-  left: -1rem;
+  top: calc(50% - 4rem);
+  left: -2rem;
 }
 
 .right {
   grid-area: right;
-  border-radius: 0 0.5rem 0.5rem 0;
+  border-radius: 0 1rem 1rem 0;
 }
 .right:before {
-  left: -2.125rem;
-  top: calc(50% - 2.125rem);
+  left: -4.4rem;
+  top: calc(50% - 4.4rem);
 }
 .right:after {
   border-left-color: currentcolor;
-  top: calc(50% - 2rem);
-  right: -1rem;
+  top: calc(50% - 4rem);
+  right: -2rem;
 }
 
 .down {
   grid-area: down;
-  border-radius: 0 0 0.5rem 0.5rem;
+  border-radius: 0 0 1rem 1rem;
 }
 .down:before {
-  left: calc(50% - 2.125rem);
-  top: -2.125rem;
+  left: calc(50% - 4.4rem);
+  top: -4.4rem;
 }
 .down:after {
   border-top-color: currentcolor;
-  left: calc(50% - 2rem);
-  bottom: -1rem;
+  left: calc(50% - 4rem);
+  bottom: -2rem;
 }
 
 .mode-container {
