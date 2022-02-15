@@ -41,6 +41,7 @@ body {
   aspect-ratio: var(--game-width) / var(--game-depth);
   display: block;
   padding-left: 1em;
+  margin-bottom: 16px;
 }
 
 .grid {
@@ -296,6 +297,7 @@ body {
   white-space: nowrap;
   width: auto;
   height: 100%;
+  margin-left: 16px;
 }
 
 .mode {
