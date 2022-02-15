@@ -258,10 +258,10 @@ document.addEventListener('DOMContentLoaded', () => {
     rightBtn.addEventListener('mousedown', () => {touch(moveRight)})
     downBtn.addEventListener('mousedown', () => {touch(droping)})
 
-    leftBtn.addEventListener('touchstart', () => {touch(moveLeft)})
-    upBtn.addEventListener('touchstart', () => {touch(rotate)})
-    rightBtn.addEventListener('touchstart', () => {touch(moveRight)})
-    downBtn.addEventListener('touchstart', () => {touch(droping)})
+    // leftBtn.addEventListener('touchstart', () => {touch(moveLeft)})
+    // upBtn.addEventListener('touchstart', () => {touch(rotate)})
+    // rightBtn.addEventListener('touchstart', () => {touch(moveRight)})
+    // downBtn.addEventListener('touchstart', () => {touch(droping)})
 
     document.addEventListener('mouseup', () => {clearInterval(timerToutch)})
 
