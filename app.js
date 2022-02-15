@@ -77,11 +77,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let toClear = []
     let bonus = 0
     const bonusTable = [0, 100, 400, 900, 2500]
-    const levelTable = [10, 60, 90, 120, 150, 200, 250, 300, 350]
+    const levelTable = [10, 30, 50, 70, 100, 150, 200, 250, 300]
 
     let timerToutch
-    const timeToogle = 600
-    const timeReInput = 50
+    const timeToogle = 500
+    const timeReInput = 40
 
     const startPosition = 3
     let currentPosition = startPosition
@@ -242,13 +242,13 @@ document.addEventListener('DOMContentLoaded', () => {
     //Controles
 
     function control(e) {
-        if(e.code == "KeyA") {
+        if(e.code == "KeyA" || e.code == "ArrowLeft") {
             moveLeft()
-        } else if(e.code == "KeyW") {
+        } else if(e.code == "KeyW" || e.code == "ArrowUp") {
             rotate()
-        } else if(e.code == "KeyD") {
+        } else if(e.code == "KeyD" || e.code == "ArrowRight") {
             moveRight()
-        } else if(e.code == "KeyS") {
+        } else if(e.code == "KeyS" || e.code == "ArrowDown") {
             droping()
         }
     }
